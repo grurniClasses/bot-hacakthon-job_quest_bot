@@ -2,10 +2,10 @@ from datetime import date
 
 
 class Application:
-    def __init__(self, company, title, stack):
-        self.company = company
-        self.title = title
-        self.stack = stack
+    def __init__(self):
+        self.company = ''
+        self.title = ''
+        self.stack = ''
         self.date_applied = date.today()
         self.status = "Applied"
         self.date_response = None
@@ -38,3 +38,14 @@ class Application:
 
     def get_date_response(self):
         return self.date_response
+
+    def set_company(self, company):
+        self.company = company
+
+    def set_title(self, title):
+        self.title = title
+
+    def set_stack(self, stack):
+        self.stack = stack
+
+
