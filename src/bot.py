@@ -15,15 +15,14 @@ logger = logging.getLogger(__name__)
 updater = Updater(token=bot_settings.BOT_TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 
-minGuess = 1
-maxGuess = 100
-guess = 1
+
 keyboard = [
     [
         InlineKeyboardButton("הכנס-משרה", callback_data='add'),
-        InlineKeyboardButton("מחק-משרה", callback_data='remove'),
+
     ],
     [InlineKeyboardButton("הצג את כל המשרות", callback_data='all')],
+    [InlineKeyboardButton("מחק-משרה", callback_data='remove')],
 ]
 reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -74,24 +73,3 @@ updater.start_polling()  # Starts polling in a background thread.
 updater.idle()  # Wait until Ctrl+C is pressed
 logger.info("* Bye!")
 
-
-
-
-
-
-
-
-
-
-#
-# my_bot = Updater(token=bott_setings.BOT_TOKEN, use_context=True)
-#
-#
-# my_bot.dispatcher.add_handler(CommandHandler("start", start))
-#
-# updater.dispatcher.add_handler(CallbackQueryHandler(button))
-#
-# logger.info("* Start polling...")
-# my_bot.start_polling()  # Starts polling in a background thread.
-# my_bot.idle()  # Wait until Ctrl+C is pressed
-# logger.info("* Bye!")
