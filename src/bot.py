@@ -17,12 +17,19 @@ dispatcher = updater.dispatcher
 
 
 keyboard = [
-    [InlineKeyboardButton("הכנס-משרה", callback_data='add')],
+    [InlineKeyboardButton("הכנס משרה", callback_data='add')],
     [InlineKeyboardButton("הצג את כל המשרות", callback_data='display_all')],
-    [InlineKeyboardButton("מחק-משרה", callback_data='remove')],
+    [InlineKeyboardButton("עדכן משרה", callback_data='update')],
 ]
 
+update_keyboard = []
+# def create_update_keyboard():
+#     global update_keyboard
+#     for key,value in all_apps.items():
+#         update_keyboard.append([InlineKeyboardButton(str(value), callback_data=f'{key}')])
+
 reply_markup = InlineKeyboardMarkup(keyboard)
+reply_update_markup = InlineKeyboardMarkup(update_keyboard)
 
 counter = 0
 new_app = {}
@@ -49,6 +56,7 @@ def start(update: Update, context: CallbackContext):
 def button(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     query.answer()
+    global all_apps
     # print(query.data)
     chat_id = update.effective_chat.id
     # guess_status = update.message.text
@@ -60,10 +68,24 @@ def button(update: Update, context: CallbackContext) -> None:
         context.bot.send_message(chat_id=chat_id, text='כל המשרות שלך:')
         for value in all_apps.values():
             context.bot.send_message(chat_id=chat_id, text=str(value))
+        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+        # update.callback_query.message.edit_text('מה תרצה לעשות עכשיו?', reply_markup=reply_markup)
+
         # print(all_apps)
             # print(json.dump(all_apps))
             # context.bot.send_message(chat_id=chat_id, text=value)
+    elif query.data == "update":
+        if len(all_apps) == 0:
+            context.bot.send_message(chat_id=chat_id, text='אין לך אף משרה! לחץ "הכנס משרה"')
+        else:
+            # create_update_keyboard()
+            # print('here')
+            global update_keyboard
+            for key, value in all_apps.items():
+                update_keyboard.append([InlineKeyboardButton(str(value), callback_data=f'{key}')])
+            # print(update_keyboard)
 
+            update.callback_query.message.edit_text('בחר את המשרה בה הפסקת תהליך', reply_markup=reply_update_markup)
 
 def add_new_app(update: Update, context: CallbackContext):
     chat_id = update.effective_chat.id
@@ -83,6 +105,7 @@ def add_new_app(update: Update, context: CallbackContext):
         counter = 0
         new_app = {}
         context.bot.send_message(chat_id=chat_id, text='המשרה הוכנסה !')
+        start(update,context)
     # pprint(all_apps)
 
 
