@@ -1,12 +1,8 @@
 import logging
-import random
 from pprint import pprint
-from threading import Timer
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import CommandHandler, CallbackContext, Updater, CallbackQueryHandler
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, \
-    Filters, Updater
-
+    Filters, Updater, CallbackQueryHandler
 import bot_settings
 from src.class_application import Application
 
@@ -21,12 +17,11 @@ dispatcher = updater.dispatcher
 
 
 keyboard = [
-    [
-        InlineKeyboardButton("הכנס-משרה", callback_data='add'),
-    ],
-    [InlineKeyboardButton("הצג את כל המשרות", callback_data='all')],
+    [InlineKeyboardButton("הכנס-משרה", callback_data='add')],
+    [InlineKeyboardButton("הצג את כל המשרות", callback_data='display_all')],
     [InlineKeyboardButton("מחק-משרה", callback_data='remove')],
 ]
+
 reply_markup = InlineKeyboardMarkup(keyboard)
 
 counter = 0
@@ -44,30 +39,34 @@ def start(update: Update, context: CallbackContext):
     chat_id = update.effective_chat.id
     logger.info(f"> Start chat #{chat_id}")
     user = update.message.from_user
-
-    context.bot.send_message(chat_id=chat_id, text=f"Hello {user.first_name}! Welcome to our bot!")
+    context.bot.send_message(chat_id=chat_id, text=f"!{user.first_name}היי  ")
     try:
-        update.message.reply_text('click:', reply_markup=reply_markup)
+        update.message.reply_text('מה תרצה לעשות?', reply_markup=reply_markup)
     except:
-        update.callback_query.message.edit_text(f'click:', reply_markup=reply_markup)
+        update.callback_query.message.edit_text('מה תרצה לעשות?', reply_markup=reply_markup)
 
 
 def button(update: Update, context: CallbackContext) -> None:
-    print('hi')
     query = update.callback_query
     query.answer()
-    print(query.data)
-
+    # print(query.data)
     chat_id = update.effective_chat.id
     # guess_status = update.message.text
     logger.info(f"= Got on chat #{chat_id}: {query.data!r}")
     if query.data == "add":
         context.bot.send_message(chat_id=chat_id, text='מה שם החברה?')
+    elif query.data == "display_all":
+        # print('here')
+        context.bot.send_message(chat_id=chat_id, text='כל המשרות שלך:')
+        for value in all_apps.values():
+            context.bot.send_message(chat_id=chat_id, text=str(value))
+        # print(all_apps)
+            # print(json.dump(all_apps))
+            # context.bot.send_message(chat_id=chat_id, text=value)
+
 
 def add_new_app(update: Update, context: CallbackContext):
     chat_id = update.effective_chat.id
-    # context.bot.send_message(chat_id=chat_id, text='מה שם החברה?')
-    # app = Application(update.message)
     global counter
     global new_app
     counter += 1
