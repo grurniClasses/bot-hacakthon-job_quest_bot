@@ -1,10 +1,14 @@
 import logging
 import random
+from pprint import pprint
 from threading import Timer
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import CommandHandler, CallbackContext, Updater, CallbackQueryHandler
+from telegram.ext import CommandHandler, CallbackContext, MessageHandler, \
+    Filters, Updater
 
 import bot_settings
+from src.class_application import Application
 
 logging.basicConfig(
     format='[%(levelname)s %(asctime)s %(module)s:%(lineno)d] %(message)s',
@@ -19,13 +23,15 @@ dispatcher = updater.dispatcher
 keyboard = [
     [
         InlineKeyboardButton("הכנס-משרה", callback_data='add'),
-
     ],
     [InlineKeyboardButton("הצג את כל המשרות", callback_data='all')],
     [InlineKeyboardButton("מחק-משרה", callback_data='remove')],
 ]
 reply_markup = InlineKeyboardMarkup(keyboard)
 
+counter = 0
+new_app = {}
+all_apps = {}
 
 # def help_command(update: Update, context: CallbackContext):
 #     chat_id = update.effective_chat.id
@@ -56,16 +62,35 @@ def button(update: Update, context: CallbackContext) -> None:
     # guess_status = update.message.text
     logger.info(f"= Got on chat #{chat_id}: {query.data!r}")
     if query.data == "add":
-        context.bot.send_message(chat_id=chat_id, text='added')
+        context.bot.send_message(chat_id=chat_id, text='מה שם החברה?')
+
+def add_new_app(update: Update, context: CallbackContext):
+    chat_id = update.effective_chat.id
+    # context.bot.send_message(chat_id=chat_id, text='מה שם החברה?')
+    # app = Application(update.message)
+    global counter
+    global new_app
+    counter += 1
+    if counter == 1:
+        new_app['company'] = update.message.text
+        context.bot.send_message(chat_id=chat_id, text='מה שם המשרה?')
+    elif counter == 2:
+        new_app['title'] = update.message.text
+        context.bot.send_message(chat_id=chat_id, text='רשום את הטכנולוגיות הנדרשות לתפקיד')
+    if counter == 3:
+        new_app['stack'] = update.message.text
+        app = Application(new_app['company'], new_app['title'], new_app['stack'])
+        all_apps[app.get_company()] = app
+        counter = 0
+        new_app = {}
+        context.bot.send_message(chat_id=chat_id, text='המשרה הוכנסה !')
+    # pprint(all_apps)
 
 
 start_handler = CommandHandler('start', start)
-# guess_handler = CommandHandler('guess', start)
-# help_handler = CommandHandler('help', help_command)
-# dispatcher.add_handler(help_handler)
 dispatcher.add_handler(start_handler)
-# dispatcher.add_handler(guess_handler)
-
+answer_handler = MessageHandler(Filters.text, add_new_app)
+dispatcher.add_handler(answer_handler)
 updater.dispatcher.add_handler(CallbackQueryHandler(button))
 
 logger.info("* Start polling...")

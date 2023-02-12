@@ -1,6 +1,5 @@
 from datetime import date
 
-
 class Application:
     def __init__(self, company, title, stack):
         self.company = company
