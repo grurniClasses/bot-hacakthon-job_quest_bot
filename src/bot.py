@@ -1,5 +1,7 @@
 import logging
 from pprint import pprint
+from pymongo import MongoClient
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, \
     Filters, Updater, CallbackQueryHandler
@@ -14,6 +16,10 @@ logger = logging.getLogger(__name__)
 
 updater = Updater(token=bot_settings.BOT_TOKEN, use_context=True)
 dispatcher = updater.dispatcher
+
+client = MongoClient()
+db = client.get_database('job_application')
+job_collection = db.get_collection('job_collection')
 
 
 keyboard = [
@@ -65,30 +71,27 @@ def button(update: Update, context: CallbackContext) -> None:
     if query.data == "add":
         context.bot.send_message(chat_id=chat_id, text='מה שם החברה?')
     elif query.data == "display_all":
-        # print('here')
         context.bot.send_message(chat_id=chat_id, text='כל המשרות שלך:')
-        for value in all_apps.values():
-            context.bot.send_message(chat_id=chat_id, text=str(value))
+        jobs = list(job_collection.find({"chat_id": str(chat_id)}))
+        logger.info(f'len of jobs:{len(jobs)}')
+        for job in jobs:
+            context.bot.send_message(chat_id=chat_id, text=f'{job["company"]},{job["title"]},{job["stack"]},{job["date_applied"]}')
         context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
-        # update.callback_query.message.edit_text('מה תרצה לעשות עכשיו?', reply_markup=reply_markup)
-
-        # print(all_apps)
-            # print(json.dump(all_apps))
-            # context.bot.send_message(chat_id=chat_id, text=value)
     elif query.data == "update":
-        if len(all_apps) == 0:
+        jobs = list(job_collection.find({"chat_id": str(chat_id)}))
+        if len(jobs) == 0:
             context.bot.send_message(chat_id=chat_id, text='אין לך אף משרה! לחץ "הכנס משרה"')
         else:
-            # create_update_keyboard()
-            # print('here')
             global update_keyboard
-            for key, value in all_apps.items():
-                update_keyboard.append([InlineKeyboardButton(str(value), callback_data=f'{key}')])
-            # print(update_keyboard)
+            for job in jobs:
+                update_keyboard.append([InlineKeyboardButton(f'{job["company"]},{job["title"]}', callback_data=f'{job["company"]}')])
             update.callback_query.message.edit_text('בחר את המשרה בה הפסקת תהליך', reply_markup=reply_update_markup)
     else:
-        app_to_uptade = all_apps[query.data]
-        app_to_uptade.set_status('Rejected')
+        job_collection.find_one_and_update({"chat_id": str(chat_id), "company": query.data}, {"$set": {"status": "Rejected"}})
+
+        # app_to_update = all_apps[query.data]
+        # app_to_update.set_status('Rejected')
+
         context.bot.send_message(chat_id=chat_id, text='המשרה עודכנה!')
         context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
 
@@ -107,6 +110,17 @@ def add_new_app(update: Update, context: CallbackContext):
         new_app['stack'] = update.message.text
         app = Application(new_app['company'], new_app['title'], new_app['stack'])
         all_apps[app.get_company()] = app
+        print(app)
+        # print(app.company,app.title,app.status,app.stack)
+        job_collection.insert_one({
+            "chat_id": str(chat_id),
+            "company": app.get_company(),
+            "title": app.get_title(),
+            "stack": app.get_stack(),
+            "date_applied": str(app.get_date_applied()),
+            "status": app.get_status(),
+            "date_response": str(app.get_date_response())
+        })
         counter = 0
         new_app = {}
         context.bot.send_message(chat_id=chat_id, text='המשרה הוכנסה !')
