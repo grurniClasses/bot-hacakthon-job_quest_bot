@@ -54,6 +54,7 @@ def start(update: Update, context: CallbackContext):
 
 
 def button(update: Update, context: CallbackContext) -> None:
+    # print('here')
     query = update.callback_query
     query.answer()
     global all_apps
@@ -84,8 +85,12 @@ def button(update: Update, context: CallbackContext) -> None:
             for key, value in all_apps.items():
                 update_keyboard.append([InlineKeyboardButton(str(value), callback_data=f'{key}')])
             # print(update_keyboard)
-
             update.callback_query.message.edit_text('בחר את המשרה בה הפסקת תהליך', reply_markup=reply_update_markup)
+    else:
+        app_to_uptade = all_apps[query.data]
+        app_to_uptade.set_status('Rejected')
+        context.bot.send_message(chat_id=chat_id, text='המשרה עודכנה!')
+        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
 
 def add_new_app(update: Update, context: CallbackContext):
     chat_id = update.effective_chat.id
@@ -105,7 +110,7 @@ def add_new_app(update: Update, context: CallbackContext):
         counter = 0
         new_app = {}
         context.bot.send_message(chat_id=chat_id, text='המשרה הוכנסה !')
-        start(update,context)
+        start(update, context)
     # pprint(all_apps)
 
 
