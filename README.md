@@ -1,9 +1,9 @@
-# 🚧 YOUR BOT NAME HERE
+# Job Quest Bot
 
 ## The Team
-- 🚧 Participant 1 Name
-- 🚧 Participant 2 Name
-- 🚧 Participant 3 Name
+- Barr Grace
+- Shahar Meshulam
+- Shahaf Pinto
 
 ## About this bot
 
