@@ -9,7 +9,7 @@ def get_jobs(title):
 
     result = []
     for job in db.json():
-        if job["title"].lower() == title.lower():
+        if title.lower() in job["title"].lower():
             result.append(job)
     result2 = []
     if result:
