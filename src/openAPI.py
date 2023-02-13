@@ -19,4 +19,5 @@ def get_company_info(name):
     lines = text.split('.')
     pretty_text = '\n'.join(lines).strip()
     print(f'>>> Information about {name}:\n', pretty_text)
+    return pretty_text
 
