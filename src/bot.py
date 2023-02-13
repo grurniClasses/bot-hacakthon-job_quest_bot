@@ -7,7 +7,7 @@ from telegram.ext import CommandHandler, CallbackContext, MessageHandler, \
 import bot_settings
 from src.class_application import Application
 from src.mongo_storage import MongoStorage
-from src.myJobs import JobSearch
+from src.myJobs import JobSearch, get_jobs
 from src.openAPI import get_company_info
 
 # Bot:
@@ -92,8 +92,8 @@ def button(update: Update, context: CallbackContext) -> None:
                 update.callback_query.message.edit_text('בחר את המשרה בה הפסקת תהליך', reply_markup=reply_update_markup)
 
         case "find":
-            global find_this_job_data
-            find_this_job_data = JobSearch()
+            # global find_this_job_data
+            # find_this_job_data = JobSearch()
 
             global find
             find = True
@@ -132,28 +132,29 @@ def add_new_app(update: Update, context: CallbackContext):
 
 
 def find_new_job(update: Update, context: CallbackContext):
-    global find_this_job_data
+    # global find_this_job_data
     global find
     chat_id = update.effective_chat.id
     # find_job = context.chat_data['find']
     # print(f'what:{find_this_job_data.what}, where:{find_this_job_data.where}')
-    if not find_this_job_data.what:
-        find_this_job_data.set_what(update.message.text)
-        context.bot.send_message(chat_id=chat_id, text='רשום באנגלית את המיקום המבוקש למשרה')
-    elif not find_this_job_data.where:
-        find_this_job_data.set_where(update.message.text)
-        if find_this_job_data.findJob():
-            context.bot.send_message(chat_id=chat_id, text='מצאתי!')
-            jobs_found = find_this_job_data.findJob()
-            for job in jobs_found:
-                context.bot.send_message(chat_id=chat_id, text=f'description:{job["description"]}\nLink to apply:{job["link"]}')
-                # print(f'description:{job["description"]}\nLink to apply:{job["link"]}')
-            context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
-            find = False
-        else:
-            context.bot.send_message(chat_id=chat_id, text='אין לי משרה חדשה בשבילך..')
-            context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
-            find = False
+
+    # if not find_this_job_data.what:
+    #     find_this_job_data.set_what(update.message.text)
+    #     context.bot.send_message(chat_id=chat_id, text='רשום באנגלית את המיקום המבוקש למשרה')
+    # elif not find_this_job_data.where:
+    #     find_this_job_data.set_where(update.message.text)
+    jobs_found = get_jobs(update.message.text)
+    if jobs_found:
+        context.bot.send_message(chat_id=chat_id, text='מצאתי!')
+        for job in jobs_found:
+            context.bot.send_message(chat_id=chat_id, text=f'company:{job["company"]}\nCity:{job["city"]}\nLink to apply:{job["link"]}')
+            # print(f'description:{job["description"]}\nLink to apply:{job["link"]}')
+        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+        find = False
+    else:
+        context.bot.send_message(chat_id=chat_id, text='אין לי משרה חדשה בשבילך..')
+        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+        find = False
 
 
 def company_info(update: Update, context: CallbackContext):
