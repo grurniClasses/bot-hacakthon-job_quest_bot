@@ -2,7 +2,7 @@ import openai
 
 
 def get_company_info(name):
-    openai.api_key = "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"
+    openai.api_key = bot_settings.OPENAI_KEY
     location = 'Israel'
 
     response = openai.Completion.create(
@@ -19,4 +19,5 @@ def get_company_info(name):
     lines = text.split('.')
     pretty_text = '\n'.join(lines).strip()
     print(f'>>> Information about {name}:\n', pretty_text)
+    return pretty_text
 
