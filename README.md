@@ -14,10 +14,11 @@ helping him to keep track of his applications, interviews and more.
 
 🚧 ADD SCREENSHOTS/GIFS/SCREENCAST HERE (REFER TO MARKDOWN'S SYNTAX FOR HELP ON DISPLAYING IMAGES)
 
-- This is a work in progress, features to be added:
--[x] Show new relevant jobs to the user by title and location
--[x] Add a feature that allows the user to easily acquire information about a company
--[ ] ...
+#### This is a work in progress, features to be added:
+- [x] Show new relevant jobs to the user by title and location
+- [x] Add a feature that allows the user to easily acquire information about a company
+- [ ] 1
+- [ ] 2
  
 ## Instructions for Developers 
 ### Prerequisites
