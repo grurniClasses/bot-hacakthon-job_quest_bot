@@ -56,4 +56,5 @@ get information about companies.
 ### Running the bot        
 - Run the bot:
 
-      poetry run python bot.py
+      poetry run python src/bot.py
+
