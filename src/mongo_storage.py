@@ -17,7 +17,7 @@ class MongoStorage:
         return self.job_collection.find_one({"chat_id": str(chat_id), "company": company})
 
     def updateJobStatus(self, chat_id, company):
-        self.job_collection.find_one_and_update({"chat_id": str(chat_id), "company": company},
+        self.job_collection.find_one_and_update({"chat_id": str(chat_id), "company": company, "status": "Applied"},
                                                 {"$set": {"status": 'Rejected'}})
 
     def insertJob(self, chat_id, app):
