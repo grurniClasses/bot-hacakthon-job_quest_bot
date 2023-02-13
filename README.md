@@ -7,19 +7,24 @@
 
 ## About this bot
 
-🚧 ENTER DESCRIPTION HERE
+- Our bot purpose is to help the user manage his job search process, 
+helping him to keep track of his applications, interviews and more.
 
-🚧 YOU CAN ADD A t.me LINK TO THE BOT HERE
+- Link : http://t.me/Job_Quest_bot
 
 🚧 ADD SCREENSHOTS/GIFS/SCREENCAST HERE (REFER TO MARKDOWN'S SYNTAX FOR HELP ON DISPLAYING IMAGES)
 
-🚧 ADD ANY OTHER NOTES REGARDING THE BOT
+- This is a work in progress, features to be added:
+-[x] Show new relevant jobs to the user by title and location
+-[x] Add a feature that allows the user to easily acquire information about a company
+-[ ] ...
  
 ## Instructions for Developers 
 ### Prerequisites
 - Python 3.10
 - Poetry
-- 🚧 ADD ANY OTHER PREREQUISITE HERE (MONGODB?)
+- MongoDB
+- Telegram account
 
 ### Setup
 - git clone this repository 
