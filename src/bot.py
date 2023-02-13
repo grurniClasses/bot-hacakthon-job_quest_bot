@@ -55,16 +55,19 @@ def button(update: Update, context: CallbackContext) -> None:
             context.bot.send_message(chat_id=chat_id, text='מה שם החברה?')
 
         case "display_all":  #### Maybe by status?
-            context.bot.send_message(chat_id=chat_id, text='כל המשרות שלך:')
-            jobs = storage.findAllByChatId(chat_id)
-            logger.info(f'len of jobs:{len(jobs)}')
-            for job in jobs:
-                context.bot.send_message(chat_id=chat_id,
-                                         text=f'{job["company"]}: {job["title"]}, {job["stack"]}, {job["date_applied"]}')
+            jobs = storage.findAllAppliedByChatId(chat_id)
+            if len(jobs) == 0:
+                context.bot.send_message(chat_id=chat_id, text='אתה לא בתהליך קבלה לאף משרה...')
+            else:
+                context.bot.send_message(chat_id=chat_id, text='כל המשרות שלך:')
+                #logger.info(f'len of jobs:{len(jobs)}')
+                for job in jobs:
+                    context.bot.send_message(chat_id=chat_id,
+                                             text=f'{job["company"]}: {job["title"]}, {job["stack"]}, {job["date_applied"]}, status:{job["status"]}')
             context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
 
         case "update":
-            jobs = storage.findAllByChatId(chat_id)
+            jobs = storage.findAllAppliedByChatId(chat_id)
             if len(jobs) == 0:
                 context.bot.send_message(chat_id=chat_id, text='אין לך אף משרה! לחץ "הכנס משרה"')
             else:

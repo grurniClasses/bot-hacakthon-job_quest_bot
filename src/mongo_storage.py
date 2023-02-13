@@ -10,6 +10,9 @@ class MongoStorage:
     def findAllByChatId(self, chat_id):
         return list(self.job_collection.find({"chat_id": str(chat_id)}))
 
+    def findAllAppliedByChatId(self, chat_id):
+        return list(self.job_collection.find({"chat_id": str(chat_id), "status": "Applied"}))
+
     def findJobByCompany(self, chat_id, company):
         return self.job_collection.find_one({"chat_id": str(chat_id), "company": company})
 
