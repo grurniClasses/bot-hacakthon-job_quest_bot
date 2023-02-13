@@ -5,10 +5,10 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, \
     Filters, Updater, CallbackQueryHandler, ConversationHandler
 import bot_settings
-from src.class_application import Application
-from src.mongo_storage import MongoStorage
-from src.myJobs import get_jobs
-from src.openAPI import get_company_info
+from class_application import Application
+from mongo_storage import MongoStorage
+from myJobs import get_jobs
+from openAPI import get_company_info
 
 # Bot:
 updater = Updater(token=bot_settings.BOT_TOKEN, use_context=True)
