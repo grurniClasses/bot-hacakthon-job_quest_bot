@@ -69,6 +69,7 @@ def button(update: Update, context: CallbackContext) -> None:
                 context.bot.send_message(chat_id=chat_id, text='אין לך אף משרה! לחץ "הכנס משרה"')
             else:
                 global update_keyboard
+                update_keyboard.clear()
                 for job in jobs:
                     update_keyboard.append(
                         [InlineKeyboardButton(f'{job["company"]} : {job["title"]}', callback_data=f'{job["company"]}')])
