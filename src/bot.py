@@ -8,6 +8,7 @@ import bot_settings
 from src.class_application import Application
 from src.mongo_storage import MongoStorage
 from src.myJobs import JobSearch
+from src.openAPI import get_company_info
 
 # Bot:
 updater = Updater(token=bot_settings.BOT_TOKEN, use_context=True)
@@ -28,6 +29,7 @@ keyboard = [
     [InlineKeyboardButton("הצג את כל המשרות", callback_data='display_all')],
     [InlineKeyboardButton("עדכן משרה", callback_data='update')],
     [InlineKeyboardButton("יש משרות חדשות?", callback_data='find')],
+    [InlineKeyboardButton("מה החברה הזאת עושה??", callback_data='info')],
 ]
 
 # Handlers:
@@ -47,9 +49,11 @@ def start(update: Update, context: CallbackContext):
     except:
         update.callback_query.message.edit_text('מה תרצה לעשות?', reply_markup=reply_markup)
 
+info = False
 find = False
 addnewapp = False
 find_this_job_data = JobSearch()
+
 
 def button(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
@@ -95,6 +99,11 @@ def button(update: Update, context: CallbackContext) -> None:
             find = True
             context.bot.send_message(chat_id=chat_id, text='רשום באנגלית שם משרה לחיפוש')
 
+        case "info":
+            global info
+            info = True
+            context.bot.send_message(chat_id=chat_id, text='רשום באנגלית שם חברה')
+
         case _:
             storage.updateJobStatus(chat_id, query.data)
             context.bot.send_message(chat_id=chat_id, text='המשרה עודכנה!')
@@ -127,7 +136,7 @@ def find_new_job(update: Update, context: CallbackContext):
     global find
     chat_id = update.effective_chat.id
     # find_job = context.chat_data['find']
-    print(f'what:{find_this_job_data.what}, where:{find_this_job_data.where}')
+    # print(f'what:{find_this_job_data.what}, where:{find_this_job_data.where}')
     if not find_this_job_data.what:
         find_this_job_data.set_what(update.message.text)
         context.bot.send_message(chat_id=chat_id, text='רשום באנגלית את המיקום המבוקש למשרה')
@@ -147,13 +156,25 @@ def find_new_job(update: Update, context: CallbackContext):
             find = False
 
 
+def company_info(update: Update, context: CallbackContext):
+    global info
+    info = False
+    chat_id = update.effective_chat.id
+    result = get_company_info(update.message.text)
+    context.bot.send_message(chat_id=chat_id, text=result)
+    context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+
+
 def userInputText(update: Update, context: CallbackContext):
     global addnewapp
     global find
+    global info
     if addnewapp:
         add_new_app(update, context)
     elif find:
         find_new_job(update, context)
+    elif info:
+        company_info(update, context)
 
 
 start_handler = CommandHandler('start', start)
