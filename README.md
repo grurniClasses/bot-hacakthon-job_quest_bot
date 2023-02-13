@@ -8,11 +8,23 @@
 ## About this bot
 
 - Our bot purpose is to help the user manage his job search process, 
-helping him to keep track of his applications, interviews and more.
+helping him to keep track of his applications, find relevant jobs and
+get information about companies.
 
-- Link : http://t.me/Job_Quest_bot
 
-🚧 ADD SCREENSHOTS/GIFS/SCREENCAST HERE (REFER TO MARKDOWN'S SYNTAX FOR HELP ON DISPLAYING IMAGES)
+- Link to the bot : http://t.me/Job_Quest_bot
+
+#### Menu
+![img.png](img.png)
+
+#### Job Search
+![img_1.png](img_1.png)
+
+#### Find information about a company
+![img_2.png](img_2.png)
+
+#### Manage your applications
+![img_3.png](img_3.png)
 
 #### This is a work in progress, features to be added:
 - [x] Show new relevant jobs to the user by title and location
