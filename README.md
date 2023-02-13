@@ -17,8 +17,9 @@ helping him to keep track of his applications, interviews and more.
 #### This is a work in progress, features to be added:
 - [x] Show new relevant jobs to the user by title and location
 - [x] Add a feature that allows the user to easily acquire information about a company
-- [ ] 1
-- [ ] 2
+- [ ] Add the option to update why a job was rejected and add the feedback received if any
+- [ ] Add relevant jobs from more websites with more filters
+- [ ] Export user's data to excel file
  
 ## Instructions for Developers 
 ### Prerequisites
