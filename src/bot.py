@@ -7,7 +7,7 @@ from telegram.ext import CommandHandler, CallbackContext, MessageHandler, \
 import bot_settings
 from src.class_application import Application
 from src.mongo_storage import MongoStorage
-from src.myJobs import JobSearch, get_jobs
+from src.myJobs import get_jobs
 from src.openAPI import get_company_info
 
 # Bot:
@@ -52,7 +52,7 @@ def start(update: Update, context: CallbackContext):
 info = False
 find = False
 addnewapp = False
-find_this_job_data = JobSearch()
+# find_this_job_data = JobSearch()
 
 
 def button(update: Update, context: CallbackContext) -> None:
