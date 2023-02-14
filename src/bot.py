@@ -1,5 +1,7 @@
 import logging
+from os import listdir
 from pprint import pprint
+from random import randrange
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, \
@@ -103,7 +105,7 @@ def button(update: Update, context: CallbackContext) -> None:
 
         case _:
             storage.updateJobStatus(chat_id, query.data)
-            context.bot.send_message(chat_id=chat_id, text='המשרה עודכנה!')
+            context.bot.send_message(chat_id=chat_id, text='המשרה עודכנה 😢')
             context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות? 🧐', reply_markup=reply_markup)
 
 
@@ -144,12 +146,24 @@ def find_new_job(update: Update, context: CallbackContext):
         find = False
 
 
+
+
+def get_gif_data():
+    """ Generates binary data to post animation """
+    files = []
+    file = '../gif/giphy.gif'
+    files.append(file)
+    new_gif = files[randrange(1)]
+    logger.info(f"-== Used gif file: {new_gif}")
+    animation = open(new_gif, 'rb').read()
+    return animation
 def company_info(update: Update, context: CallbackContext):
     global info
     info = False
     chat_id = update.effective_chat.id
     context.bot.send_message(chat_id=chat_id, text='רק רגע, מביא נתונים.......')
-    context.bot.send_message(chat_id=chat_id, text="")
+    context.bot.sendAnimation(chat_id=update.message.chat_id,
+                              animation=get_gif_data())
     result = get_company_info(update.message.text)
     context.bot.send_message(chat_id=chat_id, text=result)
     context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות? 🧐', reply_markup=reply_markup)
