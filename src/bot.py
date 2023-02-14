@@ -27,7 +27,7 @@ storage = MongoStorage()
 keyboard = [
     [InlineKeyboardButton("הכנס משרה", callback_data='add')],
     [InlineKeyboardButton("הצג את כל המשרות", callback_data='display_all')],
-    [InlineKeyboardButton("עדכן משרה", callback_data='update')],
+    [InlineKeyboardButton("עדכן הפסקת תהליך", callback_data='update')],
     [InlineKeyboardButton("יש משרות חדשות?", callback_data='find')],
     [InlineKeyboardButton("מה החברה הזאת עושה??", callback_data='info')],
 ]
@@ -43,11 +43,11 @@ def start(update: Update, context: CallbackContext):
     logger.info(f"> Start chat #{chat_id}")
     user = update.message.from_user
     context.chat_data['app'] = Application()
-    context.bot.send_message(chat_id=chat_id, text=f"! {user.first_name}היי  ")
+    context.bot.send_message(chat_id=chat_id, text=f"!😊 {user.first_name} היי ")
     try:
-        update.message.reply_text('מה תרצה לעשות?', reply_markup=reply_markup)
+        update.message.reply_text('מה תרצה לעשות? 🧐', reply_markup=reply_markup)
     except:
-        update.callback_query.message.edit_text('מה תרצה לעשות?', reply_markup=reply_markup)
+        update.callback_query.message.edit_text('מה תרצה לעשות? 🧐', reply_markup=reply_markup)
 
 
 info = False
@@ -77,7 +77,7 @@ def button(update: Update, context: CallbackContext) -> None:
                 for job in jobs:
                     context.bot.send_message(chat_id=chat_id,
                                              text=f'{job["company"]}: {job["title"]}, {job["stack"]}, {job["date_applied"]}, status:{job["status"]}')
-            context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+            context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות? 🧐', reply_markup=reply_markup)
 
         case "update":
             jobs = storage.findAllAppliedByChatId(chat_id)
@@ -104,7 +104,7 @@ def button(update: Update, context: CallbackContext) -> None:
         case _:
             storage.updateJobStatus(chat_id, query.data)
             context.bot.send_message(chat_id=chat_id, text='המשרה עודכנה!')
-            context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+            context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות? 🧐', reply_markup=reply_markup)
 
 
 def add_new_app(update: Update, context: CallbackContext):
@@ -122,7 +122,7 @@ def add_new_app(update: Update, context: CallbackContext):
         global addnewapp
         app.set_stack(update.message.text)
         storage.insertJob(chat_id, app)
-        context.bot.send_message(chat_id=chat_id, text='המשרה הוכנסה !')
+        context.bot.send_message(chat_id=chat_id, text='המשרה הוכנסה ! 📋')
         del context.chat_data['app']
         start(update, context)
         addnewapp = False
@@ -136,11 +136,11 @@ def find_new_job(update: Update, context: CallbackContext):
         context.bot.send_message(chat_id=chat_id, text='מצאתי!')
         for job in jobs_found:
             context.bot.send_message(chat_id=chat_id, text=f'company:{job["company"]}\nCity:{job["city"]}\nLink to apply:{job["link"]}')
-        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות? 🧐', reply_markup=reply_markup)
         find = False
     else:
         context.bot.send_message(chat_id=chat_id, text='אין לי משרה חדשה בשבילך..')
-        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+        context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות? 🧐', reply_markup=reply_markup)
         find = False
 
 
@@ -149,9 +149,10 @@ def company_info(update: Update, context: CallbackContext):
     info = False
     chat_id = update.effective_chat.id
     context.bot.send_message(chat_id=chat_id, text='רק רגע, מביא נתונים.......')
+    context.bot.send_message(chat_id=chat_id, text="")
     result = get_company_info(update.message.text)
     context.bot.send_message(chat_id=chat_id, text=result)
-    context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות?', reply_markup=reply_markup)
+    context.bot.send_message(chat_id=chat_id, text='מה תרצה לעשות? 🧐', reply_markup=reply_markup)
 
 
 def userInputText(update: Update, context: CallbackContext):
